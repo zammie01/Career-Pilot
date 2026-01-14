@@ -31,8 +31,7 @@
 
 ## 🏛 Architecture
 
-![Career Pilot Architecture](./An_infographic-style_digital_illustration_diagram_.png)
-
+![Career Pilot Architecture]
 **Hybrid Clean Architecture Layers:**
 
 1. **Bootstrap:** DI, environment, error handling
