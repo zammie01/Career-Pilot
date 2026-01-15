@@ -21,7 +21,7 @@
 
 | Layer | Technology |
 |-------|-----------|
-| **Frontend** | Flutter, Bloc, Riverpod, go_router |
+| **Frontend** | Flutter, Riverpod, go_router |
 | **Networking** | Dio |
 | **Backend** | Supabase (PostgreSQL, Auth, Storage, Edge Functions) |
 | **AI Services** | OpenAI API |
@@ -34,7 +34,7 @@
 **Hybrid Clean Architecture Layers:**
 
 1. **Bootstrap:** DI, environment, error handling
-2. **Presentation:** Flutter UI, Bloc, Riverpod, go_router
+2. **Presentation:** Flutter UI, Riverpod, go_router
 3. **Domain:** Entities, Use Cases, Business Logic
 4. **Data:** Repositories, Network (Dio), Storage
 5. **Core & Shared:** AI helpers, network, UI components, theme
