@@ -8,6 +8,7 @@ import '../core/constants/app_constants.dart';
 class CareerPilotApp extends ConsumerWidget {
   const CareerPilotApp({super.key});
 
+  @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(appRouterProvider);
 

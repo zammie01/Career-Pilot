@@ -49,7 +49,7 @@ class ErrorLogger {
     // For now, just a placeholder
   }
 
-  /// Log network requests (useful for debugging)
+  /// Log network requests
   void logRequest(String method, String url, {Map<String, dynamic>? data}) {
     if (kDebugMode) {
       _logger.d('[$method] $url', error: data);

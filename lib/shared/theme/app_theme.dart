@@ -172,6 +172,6 @@ class AppTheme {
     );
   }
 
-  /// Dark theme (TODO: implement when needed)
+  /// Dark theme (TODO: implement Dark theme)
   static ThemeData get darkTheme => lightTheme;
 }
