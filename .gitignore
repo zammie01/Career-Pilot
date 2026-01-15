@@ -47,4 +47,3 @@ app.*.map.json
 # .gitignore
 .env
 *.env
-!.env.example
