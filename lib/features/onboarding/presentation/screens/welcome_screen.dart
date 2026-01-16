@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/routing/app_router.dart';
 
 /// Welcome screen - introduces the app
 class WelcomeScreen extends StatelessWidget {
@@ -10,7 +12,7 @@ class WelcomeScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(AppConstants.defaultPadding * 2),
+          padding: const EdgeInsets.all(AppConstants.defaultPadding),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -78,22 +80,12 @@ class WelcomeScreen extends StatelessWidget {
 
               // Action buttons
               ElevatedButton(
-                onPressed: () {
-                  // TODO: Navigate to register/onboarding
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Get Started - Coming soon!')),
-                  );
-                },
+                onPressed: () => context.go(AppRoutes.register),
                 child: const Text('Get Started'),
               ),
               const SizedBox(height: 12),
               OutlinedButton(
-                onPressed: () {
-                  // TODO: Navigate to login
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Sign In - Coming soon!')),
-                  );
-                },
+                onPressed: () => context.go(AppRoutes.login),
                 child: const Text('Sign In'),
               ),
             ],

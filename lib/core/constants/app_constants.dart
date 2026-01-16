@@ -17,7 +17,7 @@ class AppConstants {
   static const Duration receiveTimeout = Duration(seconds: 30);
 
   // UI
-  static const double defaultPadding = 16.0;
+  static const double defaultPadding = 25.0;
   static const double defaultBorderRadius = 12.0;
 
   // Database

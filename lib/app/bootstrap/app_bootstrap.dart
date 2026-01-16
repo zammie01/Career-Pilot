@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'error_logger.dart';
 import '../../core/network/supabase_client.dart';
+import '../../core/storage/local_database.dart';
 
 /// Handles app initialization and bootstrap
 class AppBootstrap {
@@ -39,8 +40,8 @@ class AppBootstrap {
       // Initialize Supabase
       await _initializeSupabase();
 
-      // TODO: Initialize local database (Drift)
-      // await _initializeLocalDatabase();
+      // Initialize local database (Drift)
+      await _initializeLocalDatabase();
 
       ErrorLogger().info('App initialization completed successfully');
     } catch (e, stackTrace) {
@@ -71,8 +72,17 @@ class AppBootstrap {
 
   /// Initialize local database
   static Future<void> _initializeLocalDatabase() async {
-    // TODO: Initialize Drift database
-    ErrorLogger().info('Local database initialization skipped (not implemented yet)');
+    try {
+      // Access database instance to trigger initialization
+      final db = LocalDatabase.instance;
+      ErrorLogger().info('Local database initialized successfully');
+
+      // Test connection
+      await db.select(db.users).get();
+    } catch (e, stackTrace) {
+      ErrorLogger().error('Failed to initialize local database', e, stackTrace);
+      // Don't throw - allow app to work without local storage
+    }
   }
 
   /// Handle global errors

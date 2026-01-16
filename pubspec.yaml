@@ -59,6 +59,7 @@ dependencies:
   drift: ^2.30.1
   sqlite3_flutter_libs: ^0.5.41
   path_provider: ^2.1.5
+  shared_preferences: ^2.5.4
 
   # Utilities
   freezed_annotation: ^3.1.0

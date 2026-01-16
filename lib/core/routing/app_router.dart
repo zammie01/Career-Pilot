@@ -1,10 +1,34 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../features/onboarding/presentation/screens/splash_screen.dart';
 import '../../features/onboarding/presentation/screens/welcome_screen.dart';
+import '../../features/auth/presentation/screens/sign_up_screen.dart';
+import '../../features/auth/presentation/screens/sign_in_screen.dart';
+import '../../features/home/presentation/screens/home_screen.dart';
+import '../../features/auth/presentation/providers/auth_providers.dart';
+import '../storage/onboarding_storage.dart';
 
 part 'app_router.g.dart';
+
+/// Helper class to refresh router when auth state changes
+class GoRouterRefreshStream extends ChangeNotifier {
+  GoRouterRefreshStream(Stream<dynamic> stream) {
+    notifyListeners();
+    _subscription = stream.asBroadcastStream().listen(
+          (dynamic _) => notifyListeners(),
+    );
+  }
+
+  late final StreamSubscription<dynamic> _subscription;
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
+}
 
 /// Route names for type-safe navigation
 class AppRoutes {
@@ -17,15 +41,15 @@ class AppRoutes {
 }
 
 /// GoRouter provider
-@Riverpod(keepAlive: true)
+@riverpod
 GoRouter appRouter(Ref ref) {
   return GoRouter(
-    initialLocation: '/',
+    initialLocation: AppRoutes.splash,
     debugLogDiagnostics: true,
     routes: [
       // Splash screen
       GoRoute(
-        path: '/',
+        path: AppRoutes.splash,
         builder: (context, state) => const SplashScreen(),
       ),
 
@@ -33,6 +57,24 @@ GoRouter appRouter(Ref ref) {
       GoRoute(
         path: AppRoutes.welcome,
         builder: (context, state) => const WelcomeScreen(),
+      ),
+
+      // Sign up screen
+      GoRoute(
+        path: AppRoutes.register,
+        builder: (context, state) => const SignUpScreen(),
+      ),
+
+      // Sign in screen
+      GoRoute(
+        path: AppRoutes.login,
+        builder: (context, state) => const SignInScreen(),
+      ),
+
+      // Home screen (protected)
+      GoRoute(
+        path: AppRoutes.home,
+        builder: (context, state) => const HomeScreen(),
       ),
 
       // TODO: Add more routes as features are built
@@ -73,14 +115,43 @@ GoRouter appRouter(Ref ref) {
       ),
     ),
 
-    // Redirect logic (e.g., check auth state)
-    redirect: (context, state) {
-      // TODO: Add auth redirect logic
-      // final isAuthenticated = ref.read(authStateProvider);
-      // if (!isAuthenticated && state.uri.path == AppRoutes.home) {
-      //   return AppRoutes.login;
-      // }
-      return null; // No redirect
+    // Redirect logic based on auth state
+    redirect: (context, state) async {
+      final authAsync = ref.read(authStateProvider);
+      final hasSeenWelcome = await ref.read(onboardingStorageProvider.future);
+
+      // 1. While auth is loading → stay on splash (return null = proceed to current route)
+      if (authAsync.isLoading) {
+        return null;
+      }
+
+      final user = authAsync.value;           // safe because !isLoading
+      final isLoggedIn = user != null;
+      final currentPath = state.matchedLocation;
+
+      // 2. Logged-in users always go to home (protect all other screens)
+      if (isLoggedIn) {
+        if (currentPath != AppRoutes.home) {
+          return AppRoutes.home;
+        }
+        return null;
+      }
+
+      // 3. Not logged in → decide between welcome or login
+      if (!hasSeenWelcome) {
+        // First time → welcome (also allow staying if already there)
+        if (currentPath != AppRoutes.welcome) {
+          return AppRoutes.welcome;
+        }
+      } else {
+        // Returning user → login
+        if (currentPath != AppRoutes.login) {
+          return AppRoutes.login;
+        }
+      }
+
+      // Allow register or other public flows if needed
+      return null;
     },
   );
 }
